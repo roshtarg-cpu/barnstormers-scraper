@@ -128,7 +128,8 @@ def parse_detail_page(title: str, url: str, html_content: str) -> Optional[dict]
 
 def build_search_url(input_data: dict) -> str:
     """Build search URL from input parameters."""
-    base_url = "https://www.barnstormers.com/classified_ads.php"
+    # Use listing.php for recent listings (simpler page)
+    base_url = "https://www.barnstormers.com/listing.php"
     
     # Map input to query parameters (adjust based on actual site params)
     params = {}
