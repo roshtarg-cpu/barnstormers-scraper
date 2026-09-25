@@ -196,7 +196,7 @@ async def main():
     """Main scraper entry point."""
     async with Actor:
         # Get input
-        actor_input = Actor.get_input()
+        actor_input = await Actor.get_input()
         if not actor_input:
             Actor.log.error('No input provided!')
             return
