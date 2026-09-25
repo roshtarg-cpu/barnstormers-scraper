@@ -260,15 +260,3 @@ async def main():
         })
         
         Actor.log.info(f'Scraping completed! Total results: {results_count}')
-
-
-# Run the scraper
-import asyncio
-print("DEBUG: about to run main()")
-try:
-    asyncio.run(main())
-    print("DEBUG: main() completed")
-except Exception as e:
-    print(f"DEBUG ERROR: {e}")
-    import traceback
-    traceback.print_exc()
