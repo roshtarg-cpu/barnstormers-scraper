@@ -262,6 +262,6 @@ async def main():
         Actor.log.info(f'Scraping completed! Total results: {results_count}')
 
 
-if __name__ == '__main__':
-    import asyncio
-    asyncio.run(main())
+# Run the scraper
+import asyncio
+asyncio.run(main())
