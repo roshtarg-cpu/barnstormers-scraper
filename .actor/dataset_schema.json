@@ -2,27 +2,77 @@
   "$schema": "https://apify.com/schemas/v1/dataset.ide.json",
   "actorSpecification": 1,
   "fields": {
-    "url": {"type": "string", "title": "URL"},
-    "title": {"type": "string", "title": "Listing Title"},
-    "make": {"type": "string", "title": "Make"},
-    "model": {"type": "string", "title": "Model"},
-    "year": {"type": "integer", "title": "Year"},
-    "price": {"type": "number", "title": "Price (USD)"},
-    "category": {"type": "string", "title": "Category"},
-    "tailNumber": {"type": "string", "title": "Tail Number"},
-    "totalTimeHours": {"type": "number", "title": "Total Hours"},
-    "location": {"type": "string", "title": "Location"},
-    "description": {"type": "string", "title": "Description"},
-    "sellerName": {"type": "string", "title": "Seller Name"},
-    "sellerPhone": {"type": "string", "title": "Seller Phone"},
-    "sellerEmail": {"type": "string", "title": "Seller Email"},
-    "imageUrl": {"type": "string", "title": "Image URL"},
-    "scrapedAt": {"type": "string", "title": "Scraped At"}
+    "url": {
+      "type": "string",
+      "title": "URL"
+    },
+    "title": {
+      "type": "string", 
+      "title": "Listing Title"
+    },
+    "make": {
+      "type": "string",
+      "title": "Make"
+    },
+    "model": {
+      "type": "string",
+      "title": "Model"
+    },
+    "year": {
+      "type": "integer",
+      "title": "Year"
+    },
+    "price": {
+      "type": "number",
+      "title": "Price (USD)"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category"
+    },
+    "tailNumber": {
+      "type": "string",
+      "title": "Tail Number"
+    },
+    "totalTimeHours": {
+      "type": "number",
+      "title": "Total Hours"
+    },
+    "location": {
+      "type": "string",
+      "title": "Location"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "sellerName": {
+      "type": "string",
+      "title": "Seller Name"
+    },
+    "sellerPhone": {
+      "type": "string",
+      "title": "Seller Phone"
+    },
+    "sellerEmail": {
+      "type": "string",
+      "title": "Seller Email"
+    },
+    "imageUrl": {
+      "type": "string",
+      "title": "Image URL"
+    },
+    "scrapedAt": {
+      "type": "string",
+      "title": "Scraped At"
+    }
   },
   "views": {
     "overview": {
       "title": "Overview",
-      "transformation": {"fields": ["url","title","make","model","year","price","location"]},
+      "transformation": {
+        "fields": ["url", "title", "make", "model", "year", "price", "location"]
+      },
       "display": {
         "component": "table",
         "properties": {
