@@ -1,4 +1,5 @@
 {
+  "actorOutputSchemaVersion": 1,
   "title": "Barnstormers Aircraft Listing",
   "type": "object",
   "schemaVersion": 1,
