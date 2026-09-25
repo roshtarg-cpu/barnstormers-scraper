@@ -221,7 +221,7 @@ async def main():
         # Configure HTTP client
         client_kwargs = {'follow_redirects': True, 'timeout': 30.0}
         if proxy_url:
-            client_kwargs['proxies'] = proxy_url
+            client_kwargs['proxy'] = proxy_url  # httpx uses 'proxy', not 'proxies'
         
         results_count = 0
         
