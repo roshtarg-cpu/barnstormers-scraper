@@ -88,7 +88,7 @@ def parse_listing_row(row, base_url: str) -> Optional[dict]:
         
         return {
             'url': url,
-            'title': title,
+            'listingTitle': title,
             'make': make,
             'model': model,
             'year': year,

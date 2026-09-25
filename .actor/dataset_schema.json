@@ -6,7 +6,7 @@
       "type": "string",
       "title": "URL"
     },
-    "title": {
+    "listingTitle": {
       "type": "string", 
       "title": "Listing Title"
     },
@@ -71,13 +71,13 @@
     "overview": {
       "title": "Overview",
       "transformation": {
-        "fields": ["url", "title", "make", "model", "year", "price", "location"]
+        "fields": ["url", "listingTitle", "make", "model", "year", "price", "location"]
       },
       "display": {
         "component": "table",
         "properties": {
           "url": {"label": "URL", "format": "link"},
-          "title": {"label": "Title", "format": "text"},
+          "listingTitle": {"label": "Title", "format": "text"},
           "make": {"label": "Make", "format": "text"},
           "model": {"label": "Model", "format": "text"},
           "year": {"label": "Year", "format": "text"},
