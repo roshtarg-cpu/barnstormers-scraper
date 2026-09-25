@@ -1,4 +1,5 @@
 """Barnstormers.com Aircraft Classifieds Scraper"""
+import os
 import re
 from datetime import datetime, timezone
 from typing import Optional
@@ -212,7 +213,10 @@ async def main():
         proxy_config = actor_input.get('proxyConfiguration')
         proxy_url = None
         if proxy_config and proxy_config.get('useApifyProxy'):
-            proxy_url = Actor.create_proxy_url()
+            # Manual proxy construction for SDK 1.x
+            proxy_password = os.getenv('APIFY_PROXY_PASSWORD')
+            if proxy_password:
+                proxy_url = f"http://auto:{proxy_password}@proxy.apify.com:8000"
         
         # Configure HTTP client
         client_kwargs = {'follow_redirects': True, 'timeout': 30.0}
