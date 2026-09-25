@@ -25,67 +25,82 @@ def extract_number(text: str) -> Optional[float]:
     return None
 
 
-def parse_listing_row(row, base_url: str) -> Optional[dict]:
-    """Parse a single listing table row."""
+def parse_detail_page(title: str, url: str, html_content: str) -> Optional[dict]:
+    """Parse aircraft listing detail page."""
     try:
-        cells = row.find_all('td')
-        if len(cells) < 6:
-            return None
+        soup = BeautifulSoup(html_content, 'lxml')
         
-        # Extract basic info
-        link_cell = cells[1]
-        link = link_cell.find('a')
-        if not link:
-            return None
-        
-        url = urljoin(base_url, link.get('href', ''))
-        title = link.get_text(strip=True)
-        
-        # Parse title for make/model/year
-        # Common format: "1975 Cessna 172M" or "Piper Cherokee 180"
+        # Parse title for make/model/year (e.g., "1993 MD Helicopters 520N")
         title_parts = title.split()
         year = None
         make = None
         model = None
         
-        # Try to extract year (4-digit number at start)
         if title_parts and re.match(r'^\d{4}$', title_parts[0]):
             year = int(title_parts[0])
             title_parts = title_parts[1:]
         
-        # First remaining word is usually make
         if title_parts:
             make = title_parts[0]
         
-        # Rest is model
         if len(title_parts) > 1:
             model = ' '.join(title_parts[1:])
         
-        # Extract other fields
-        category = cells[0].get_text(strip=True) if len(cells) > 0 else None
-        price_text = cells[2].get_text(strip=True) if len(cells) > 2 else None
-        price = extract_number(price_text)
+        # Extract price (format: "$1,250,000")
+        price = None
+        price_text = soup.get_text()
+        price_match = re.search(r'\$[\d,]+', price_text)
+        if price_match:
+            price = extract_number(price_match.group())
         
-        location = cells[3].get_text(strip=True) if len(cells) > 3 else None
+        # Extract description (main content after title)
+        description = None
+        main_table = soup.find('table')
+        if main_table:
+            text_content = main_table.get_text(strip=True, separator=' ')
+            # Description is between "FOR SALE" and "Contact"
+            desc_match = re.search(r'FOR SALE\s+(.+?)\s+Contact', text_content, re.DOTALL)
+            if desc_match:
+                description = desc_match.group(1).strip()
         
-        # Try to extract tail number (N-number pattern)
-        tail_number = None
-        desc_text = cells[4].get_text(strip=True) if len(cells) > 4 else ''
-        tail_match = re.search(r'N\d+[A-Z]*', desc_text, re.IGNORECASE)
-        if tail_match:
-            tail_number = tail_match.group().upper()
+        # Extract location (format: "Jacksonville, FL 32254")
+        location = None
+        loc_match = re.search(r'located\s+([^•]+)', price_text)
+        if loc_match:
+            location = loc_match.group(1).strip()
         
-        # Try to extract total time
+        # Extract seller name (after "Contact")
+        seller_name = None
+        seller_match = re.search(r'Contact\s+([^,]+)', price_text)
+        if seller_match:
+            seller_name = seller_match.group(1).strip()
+        
+        # Extract phone (format: "954-470-9213")
+        seller_phone = None
+        phone_match = re.search(r'Telephone:\s*(\d{3}-\d{3}-\d{4})', price_text)
+        if phone_match:
+            seller_phone = phone_match.group(1)
+        
+        # Extract total time (format: "2230TT")
         total_time = None
-        time_patterns = [
-            r'(\d+(?:,\d+)?)\s*(?:TT|TTAF|Total\s*Time|Hours?)',
-            r'(?:TT|TTAF|Total\s*Time)[:\s]*(\d+(?:,\d+)?)'
-        ]
-        for pattern in time_patterns:
-            time_match = re.search(pattern, desc_text, re.IGNORECASE)
-            if time_match:
-                total_time = extract_number(time_match.group(1))
-                break
+        tt_match = re.search(r'(\d+(?:,\d+)?)\s*TT', description or '', re.IGNORECASE)
+        if tt_match:
+            total_time = extract_number(tt_match.group(1))
+        
+        # Extract tail number (N-number)
+        tail_number = None
+        if description:
+            tail_match = re.search(r'N\d+[A-Z]*', description, re.IGNORECASE)
+            if tail_match:
+                tail_number = tail_match.group().upper()
+        
+        # Extract first image
+        image_url = None
+        img_tag = soup.find('img', src=re.compile(r'listing_images'))
+        if img_tag:
+            image_url = img_tag.get('src', '')
+            if image_url and not image_url.startswith('http'):
+                image_url = urljoin(url, image_url)
         
         return {
             'url': url,
@@ -94,66 +109,21 @@ def parse_listing_row(row, base_url: str) -> Optional[dict]:
             'model': model,
             'year': year,
             'price': price,
-            'category': category,
+            'category': None,
             'tailNumber': tail_number,
             'totalTimeHours': total_time,
             'location': location,
-            'description': desc_text,
-            'sellerName': None,
-            'sellerPhone': None,
+            'description': description,
+            'sellerName': seller_name,
+            'sellerPhone': seller_phone,
             'sellerEmail': None,
-            'imageUrl': None,
+            'imageUrl': image_url,
             'scrapedAt': datetime.now(timezone.utc).isoformat()
         }
     except Exception as e:
-        Actor.log.warning(f'Failed to parse listing row: {e}')
+        Actor.log.warning(f'Failed to parse detail page for {title}: {e}')
         return None
-
-
-def enrich_listing_detail(listing: dict, html_content: str) -> dict:
-    """Enrich listing with details from detail page."""
-    try:
-        soup = BeautifulSoup(html_content, 'lxml')
         
-        # Extract seller information
-        # Look for contact info patterns
-        text_content = soup.get_text()
-        
-        # Try to find phone number
-        phone_match = re.search(r'(?:Phone|Tel|Call)[:\s]*(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})', text_content, re.IGNORECASE)
-        if phone_match:
-            listing['sellerPhone'] = phone_match.group(1)
-        
-        # Try to find email
-        email_match = re.search(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', text_content)
-        if email_match:
-            listing['sellerEmail'] = email_match.group()
-        
-        # Try to find seller name (often near contact info)
-        seller_patterns = [
-            r'(?:Contact|Seller)[:\s]*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)',
-            r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)(?:\s+[-–]\s+)?(?:Phone|Email|Contact)'
-        ]
-        for pattern in seller_patterns:
-            seller_match = re.search(pattern, text_content)
-            if seller_match:
-                listing['sellerName'] = seller_match.group(1).strip()
-                break
-        
-        # Extract main image
-        img_tag = soup.find('img', src=re.compile(r'\.(jpg|jpeg|png|gif)', re.IGNORECASE))
-        if img_tag and img_tag.get('src'):
-            listing['imageUrl'] = urljoin(listing['url'], img_tag['src'])
-        
-        # Get fuller description
-        desc_div = soup.find('div', class_=re.compile(r'description|details|content', re.IGNORECASE))
-        if desc_div:
-            listing['description'] = desc_div.get_text(strip=True, separator=' ')[:5000]
-        
-    except Exception as e:
-        Actor.log.warning(f'Failed to enrich listing details: {e}')
-    
-    return listing
 
 
 def build_search_url(input_data: dict) -> str:
@@ -233,38 +203,43 @@ async def main():
             
             soup = BeautifulSoup(response.text, 'lxml')
             
-            # Find listing table rows
-            table = soup.find('table')
-            if not table:
-                Actor.log.warning('No listing table found on page')
+            # Find listing links (Barnstormers uses <a class='listing_header'>)
+            listing_links = soup.find_all('a', class_='listing_header')
+            Actor.log.info(f'Found {len(listing_links)} listing links')
+            
+            if not listing_links:
+                Actor.log.warning('No listings found on page')
                 return
             
-            rows = table.find_all('tr')[1:]  # Skip header row
-            Actor.log.info(f'Found {len(rows)} listing rows')
-            
-            for row in rows:
+            for link in listing_links:
                 if results_count >= max_results:
                     Actor.log.info(f'Reached maxResults limit: {max_results}')
                     break
                 
-                listing = parse_listing_row(row, search_url)
-                if not listing:
+                # Extract basic info from link
+                title = link.get_text(strip=True)
+                detail_url = urljoin(search_url, link.get('href', ''))
+                
+                if not detail_url:
                     continue
                 
-                # Optionally fetch detail page for enrichment
-                # (comment out for faster scraping if basic data is enough)
-                try:
-                    Actor.log.info(f'Fetching details for: {listing["title"]}')
-                    detail_response = await client.get(listing['url'])
-                    if detail_response.status_code == 200:
-                        listing = enrich_listing_detail(listing, detail_response.text)
-                except Exception as e:
-                    Actor.log.warning(f'Failed to fetch detail page: {e}')
+                Actor.log.info(f'Fetching details for: {title}')
                 
-                # Push result immediately
-                await Actor.push_data(listing)
-                results_count += 1
-                Actor.log.info(f'Scraped {results_count}/{max_results}: {listing["title"]}')
+                # Fetch detail page
+                try:
+                    detail_response = await client.get(detail_url)
+                    detail_response.raise_for_status()
+                    
+                    listing = parse_detail_page(title, detail_url, detail_response.text)
+                    
+                    if listing:
+                        await Actor.push_data(listing)
+                        results_count += 1
+                        Actor.log.info(f'Scraped {results_count}/{max_results}: {title}')
+                    
+                except Exception as e:
+                    Actor.log.warning(f'Failed to fetch detail page for {title}: {e}')
+                    continue
         
         # Save task metadata
         env = Actor.get_env()
