@@ -1,7 +1,8 @@
 {
+  "$schema": "https://apify.com/schemas/v1/dataset.ide.json",
+  "actorSpecification": 1,
   "title": "Barnstormers Aircraft Listings Dataset",
   "type": "object",
-  "schemaVersion": 1,
   "properties": {
     "url": {
       "title": "Listing URL",
