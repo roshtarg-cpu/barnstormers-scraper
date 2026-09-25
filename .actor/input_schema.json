@@ -1,0 +1,112 @@
+{
+  "title": "Barnstormers Aircraft Scraper Input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "aircraft_category": {
+      "title": "Aircraft Category",
+      "type": "string",
+      "description": "Filter by aircraft type (Single Engine, Multi Engine, Helicopter, etc.)",
+      "default": "All",
+      "enum": [
+        "All",
+        "Single Engine Piston",
+        "Multi Engine Piston",
+        "Turboprop",
+        "Jet",
+        "Helicopter",
+        "Experimental",
+        "Warbird",
+        "Ultralight",
+        "Parts"
+      ],
+      "editor": "select",
+      "prefill": "All"
+    },
+    "make_filter": {
+      "title": "Aircraft Make",
+      "type": "string",
+      "description": "Filter by manufacturer (e.g., Cessna, Piper, Beechcraft, Cirrus)",
+      "editor": "textfield",
+      "prefill": "",
+      "example": "Cessna"
+    },
+    "model_filter": {
+      "title": "Aircraft Model",
+      "type": "string",
+      "description": "Filter by specific model (e.g., 172, Cherokee, Baron)",
+      "editor": "textfield",
+      "prefill": "",
+      "example": "172"
+    },
+    "min_price": {
+      "title": "Minimum Price (USD)",
+      "type": "integer",
+      "description": "Minimum aircraft price in US dollars",
+      "editor": "number",
+      "prefill": null,
+      "example": 50000,
+      "minimum": 0
+    },
+    "max_price": {
+      "title": "Maximum Price (USD)",
+      "type": "integer",
+      "description": "Maximum aircraft price in US dollars",
+      "editor": "number",
+      "prefill": null,
+      "example": 500000,
+      "minimum": 0
+    },
+    "min_year": {
+      "title": "Minimum Year",
+      "type": "integer",
+      "description": "Minimum manufacturing year",
+      "editor": "number",
+      "prefill": null,
+      "example": 1980,
+      "minimum": 1900,
+      "maximum": 2030
+    },
+    "max_year": {
+      "title": "Maximum Year",
+      "type": "integer",
+      "description": "Maximum manufacturing year",
+      "editor": "number",
+      "prefill": null,
+      "example": 2024,
+      "minimum": 1900,
+      "maximum": 2030
+    },
+    "location_state": {
+      "title": "Location State (US)",
+      "type": "string",
+      "description": "Two-letter US state code (e.g., CA, TX, FL)",
+      "editor": "textfield",
+      "prefill": "",
+      "example": "CA",
+      "maxLength": 2,
+      "pattern": "^[A-Z]{2}$"
+    },
+    "maxResults": {
+      "title": "Max Results",
+      "type": "integer",
+      "description": "Maximum number of aircraft listings to scrape",
+      "editor": "number",
+      "prefill": 3,
+      "default": 3,
+      "minimum": 1,
+      "maximum": 10000
+    },
+    "proxyConfiguration": {
+      "title": "Proxy Configuration",
+      "type": "object",
+      "description": "Apify Proxy configuration",
+      "editor": "proxy",
+      "default": {
+        "useApifyProxy": true,
+        "apifyProxyGroups": ["RESIDENTIAL"]
+      }
+    }
+  },
+  "required": ["aircraft_category", "maxResults"]
+}

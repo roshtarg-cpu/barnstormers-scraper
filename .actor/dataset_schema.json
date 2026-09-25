@@ -1,0 +1,186 @@
+{
+  "title": "Barnstormers Aircraft Listings Dataset",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "url": {
+      "title": "Listing URL",
+      "type": "string",
+      "description": "Full URL to the aircraft detail page"
+    },
+    "title": {
+      "title": "Listing Title",
+      "type": "string",
+      "description": "Full listing title"
+    },
+    "make": {
+      "title": "Aircraft Make",
+      "type": "string",
+      "description": "Manufacturer name (Cessna, Piper, etc.)"
+    },
+    "model": {
+      "title": "Aircraft Model",
+      "type": "string",
+      "description": "Model designation"
+    },
+    "year": {
+      "title": "Year",
+      "type": "integer",
+      "description": "Manufacturing year"
+    },
+    "price": {
+      "title": "Price",
+      "type": "number",
+      "description": "Asking price in USD"
+    },
+    "category": {
+      "title": "Category",
+      "type": "string",
+      "description": "Aircraft type (Single Engine, Multi Engine, etc.)"
+    },
+    "tailNumber": {
+      "title": "Tail Number",
+      "type": "string",
+      "description": "Aircraft registration/tail number (N-number)"
+    },
+    "totalTimeHours": {
+      "title": "Total Time (Hours)",
+      "type": "number",
+      "description": "Total airframe hours"
+    },
+    "location": {
+      "title": "Location",
+      "type": "string",
+      "description": "City and state where aircraft is located"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string",
+      "description": "Full listing description"
+    },
+    "sellerName": {
+      "title": "Seller Name",
+      "type": "string",
+      "description": "Name of seller or dealer"
+    },
+    "sellerPhone": {
+      "title": "Seller Phone",
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "sellerEmail": {
+      "title": "Seller Email",
+      "type": "string",
+      "description": "Contact email address"
+    },
+    "imageUrl": {
+      "title": "Primary Image URL",
+      "type": "string",
+      "description": "URL of the main listing photo"
+    },
+    "scrapedAt": {
+      "title": "Scraped At",
+      "type": "string",
+      "description": "ISO timestamp when data was scraped"
+    }
+  },
+  "views": {
+    "overview": {
+      "title": "Aircraft Overview",
+      "description": "Key details of scraped aircraft listings",
+      "transformation": {
+        "fields": [
+          "year",
+          "make",
+          "model",
+          "price",
+          "location",
+          "category",
+          "tailNumber",
+          "totalTimeHours",
+          "url"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "year": {
+            "label": "Year"
+          },
+          "make": {
+            "label": "Make"
+          },
+          "model": {
+            "label": "Model"
+          },
+          "price": {
+            "label": "Price",
+            "format": "currency"
+          },
+          "location": {
+            "label": "Location"
+          },
+          "category": {
+            "label": "Type"
+          },
+          "tailNumber": {
+            "label": "Tail #"
+          },
+          "totalTimeHours": {
+            "label": "TTAF"
+          },
+          "url": {
+            "label": "URL",
+            "format": "link"
+          }
+        }
+      }
+    },
+    "contact_info": {
+      "title": "Seller Contact Information",
+      "description": "Lead generation view with seller details",
+      "transformation": {
+        "fields": [
+          "make",
+          "model",
+          "year",
+          "price",
+          "sellerName",
+          "sellerPhone",
+          "sellerEmail",
+          "location"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "make": {
+            "label": "Make"
+          },
+          "model": {
+            "label": "Model"
+          },
+          "year": {
+            "label": "Year"
+          },
+          "price": {
+            "label": "Price",
+            "format": "currency"
+          },
+          "sellerName": {
+            "label": "Seller"
+          },
+          "sellerPhone": {
+            "label": "Phone"
+          },
+          "sellerEmail": {
+            "label": "Email"
+          },
+          "location": {
+            "label": "Location"
+          }
+        }
+      }
+    }
+  }
+}

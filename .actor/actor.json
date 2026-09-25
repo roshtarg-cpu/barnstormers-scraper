@@ -1,0 +1,14 @@
+{
+  "actorSpecification": 1,
+  "name": "barnstormers-scraper",
+  "version": "1.0.0",
+  "title": "Barnstormers Aircraft Classifieds Scraper",
+  "description": "Extract aircraft listings from Barnstormers.com - the world's largest aircraft classifieds marketplace. Perfect for AI agents, lead generation, and market research.",
+  "dockerfile": "./Dockerfile",
+  "inputSchema": "./input_schema.json",
+  "outputSchema": "./output_schema.json",
+  "storages": {
+    "dataset": "./dataset_schema.json"
+  },
+  "categories": ["LEAD_GENERATION"]
+}
