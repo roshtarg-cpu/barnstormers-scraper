@@ -1,4 +1,5 @@
 """Barnstormers.com Aircraft Classifieds Scraper"""
+print("DEBUG: main.py loaded")
 import os
 import re
 from datetime import datetime, timezone
@@ -8,6 +9,8 @@ from urllib.parse import urlencode, urljoin
 import httpx
 from apify import Actor
 from bs4 import BeautifulSoup
+
+print("DEBUG: imports complete")
 
 
 def extract_number(text: str) -> Optional[float]:
