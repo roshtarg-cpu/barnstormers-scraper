@@ -42,39 +42,39 @@
     "min_price": {
       "title": "Minimum Price (USD)",
       "type": "integer",
-      "description": "Minimum aircraft price in US dollars",
+      "description": "Minimum aircraft price in US dollars (leave 0 for no minimum)",
       "editor": "number",
-      "prefill": null,
+      "prefill": 0,
       "example": 50000,
       "minimum": 0
     },
     "max_price": {
       "title": "Maximum Price (USD)",
       "type": "integer",
-      "description": "Maximum aircraft price in US dollars",
+      "description": "Maximum aircraft price in US dollars (leave 0 for no maximum)",
       "editor": "number",
-      "prefill": null,
+      "prefill": 0,
       "example": 500000,
       "minimum": 0
     },
     "min_year": {
       "title": "Minimum Year",
       "type": "integer",
-      "description": "Minimum manufacturing year",
+      "description": "Minimum manufacturing year (leave 0 for no minimum)",
       "editor": "number",
-      "prefill": null,
+      "prefill": 0,
       "example": 1980,
-      "minimum": 1900,
+      "minimum": 0,
       "maximum": 2030
     },
     "max_year": {
       "title": "Maximum Year",
       "type": "integer",
-      "description": "Maximum manufacturing year",
+      "description": "Maximum manufacturing year (leave 0 for no maximum)",
       "editor": "number",
-      "prefill": null,
+      "prefill": 0,
       "example": 2024,
-      "minimum": 1900,
+      "minimum": 0,
       "maximum": 2030
     },
     "location_state": {
